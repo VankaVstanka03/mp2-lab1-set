@@ -9,6 +9,20 @@
 
 TBitField::TBitField(int len)
 {
+    if (len < 0) {
+        throw std::invalid_argument("Length can't be negative");
+    }
+    this->BitLen = len;
+    if (BitLen % sizeof(TELEM) == 0) {
+        this->MemLen = BitLen / sizeof(TELEM);
+    }
+    else {
+        this->MemLen = BitLen / sizeof(TELEM) + 1;
+    }
+    pMem = new TELEM[MemLen];
+    for (int i = 0; i < MemLen; i++) {
+        pMem[i] = 0;
+    }
 }
 
 TBitField::TBitField(const TBitField &bf) // конструктор копирования
@@ -17,36 +31,52 @@ TBitField::TBitField(const TBitField &bf) // конструктор копиро
 
 TBitField::~TBitField()
 {
+    delete[] pMem;
 }
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
-    return 0;
+   
+    return (MemLen - 1) - (n / sizeof(TELEM));
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-    return TELEM();
+    return (TELEM)1 << (n % sizeof(TELEM));
 }
 
 // доступ к битам битового поля
 
 int TBitField::GetLength(void) const // получить длину (к-во битов)
 {
-  return 0;
+  return BitLen;
 }
 
 void TBitField::SetBit(const int n) // установить бит
 {
+    if (n < 0) {
+        throw std::invalid_argument("Bit can't be negative");
+    }
+    TELEM tmp = pMem[GetMemIndex(n)] | GetMemMask(n);
+    pMem[GetMemIndex(n)] = tmp;
+    //pMem[GetMemIndex(n)] | GetMemMask(n);
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
 {
+    if (n < 0) {
+        throw std::invalid_argument("Bit can't be negative");
+    }
+    TELEM tmp = pMem[GetMemIndex(n)] & ~GetMemMask(n);
+    pMem[GetMemIndex(n)] = tmp;
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
 {
-  return 0;
+    if (n < 0) {
+        throw std::invalid_argument("Bit can't be negative");
+    }
+  return (pMem[GetMemIndex(n)] & GetMemMask(n)) >> (n % sizeof(TELEM));
 }
 
 // битовые операции
