@@ -319,3 +319,12 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
 
   EXPECT_NE(bf1, bf2);
 }
+
+TEST(TBitField, output)
+{
+    TBitField bf(4);
+    bf.SetBit(0);
+    bf.SetBit(3);
+    cout << bf << endl;
+
+}
