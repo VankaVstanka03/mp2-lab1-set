@@ -97,6 +97,16 @@ TEST(TBitField, throws_when_clear_bit_with_too_large_index)
   ASSERT_ANY_THROW(bf.ClrBit(11));
 }
 
+TEST(TBitField, a_lot_of_bits_check_Get_and_Clr_bit) 
+{
+    TBitField bf(54);
+    bf.SetBit(35);
+
+    EXPECT_EQ(1, bf.GetBit(35));
+    bf.ClrBit(35);
+    EXPECT_EQ(0, bf.GetBit(35));
+}
+
 TEST(TBitField, can_assign_bitfields_of_equal_size)
 {
   const int size = 2;

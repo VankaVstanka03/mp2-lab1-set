@@ -13,12 +13,7 @@ TBitField::TBitField(int len)
         throw std::invalid_argument("Length can't be negative");
     }
     this->BitLen = len;
-    if (BitLen % sizeof(TELEM) == 0) {
-        this->MemLen = BitLen / sizeof(TELEM);
-    }
-    else {
-        this->MemLen = BitLen / sizeof(TELEM) + 1;
-    }
+    this->MemLen = (BitLen / (sizeof(TELEM) * 8)) + 1;
     pMem = new TELEM[MemLen];
     for (int i = 0; i < MemLen; i++) {
         pMem[i] = 0;
@@ -43,12 +38,12 @@ TBitField::~TBitField()
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
    
-    return (n / sizeof(TELEM));
+    return (n / (sizeof(TELEM) * 8));
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-    return (TELEM)1 << (n % sizeof(TELEM));
+    return (TELEM)1 << (n % (sizeof(TELEM) * 8));
 }
 
 // доступ к битам битового поля
@@ -77,12 +72,21 @@ void TBitField::ClrBit(const int n) // очистить бит
     pMem[GetMemIndex(n)] = tmp;
 }
 
+void TBitField::ClrForNegBit(const int n)
+{
+    if (n < 0) {
+        throw std::invalid_argument("Bit can't be negative");
+    }
+    TELEM tmp = pMem[GetMemIndex(n)] & ~GetMemMask(n);
+    pMem[GetMemIndex(n)] = tmp;
+}
+
 int TBitField::GetBit(const int n) const // получить значение бита
 {
     if (n < 0 || n > BitLen) {
         throw std::invalid_argument("Bit can't be negative");
     }
-  return (pMem[GetMemIndex(n)] & GetMemMask(n)) >> (n % sizeof(TELEM));
+  return (pMem[GetMemIndex(n)] & GetMemMask(n)) >> (n % (sizeof(TELEM) * 8));
 }
 
 // битовые операции
@@ -144,6 +148,9 @@ TBitField TBitField::operator~(void) // отрицание
     TBitField res(this->BitLen);
     for (int i = 0; i < MemLen; i++) {
         res.pMem[i] = ~(this->pMem[i]);
+    }
+    for (int i = BitLen; i < (sizeof(TELEM) * 8) * MemLen; i++) {
+        res.ClrForNegBit(i);
     }
     return res;
 }
