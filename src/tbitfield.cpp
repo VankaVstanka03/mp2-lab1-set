@@ -127,8 +127,19 @@ TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
     TBitField res(this->BitLen > bf.BitLen ? this->BitLen : bf.BitLen);
     int minMem = this->MemLen > bf.MemLen ? bf.MemLen : this->MemLen;
+    int maxMem = this->MemLen > bf.MemLen ? this->MemLen : bf.MemLen;
     for (int i = 0; i < minMem; i++) {
         res.pMem[i] = pMem[i] | bf.pMem[i];
+    }
+    if (maxMem == bf.MemLen) {
+        for (int i = minMem; i < maxMem; i++) {
+            res.pMem[i] = bf.pMem[i];
+        }
+    }
+    else {
+        for (int i = minMem; i < maxMem; i++) {
+            res.pMem[i] = pMem[i];
+        }
     }
     return res;
 }
@@ -159,6 +170,17 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
+    //std::string inp;
+    //istr >> inp;
+    //bf.BitLen = inp.size();
+    //bf.MemLen = (bf.BitLen / (sizeof(TELEM) * 8)) + 1;
+    //bf.pMem = new TELEM[bf.MemLen];
+    //for (int i = 0; i < bf.MemLen; i++) {
+    //    bf.pMem[i] = 0;
+    //}
+    //for (int i = 0; i < inp.size(); i++) {
+    //    
+    //}
     return istr;
 }
 

@@ -295,3 +295,12 @@ TEST(TSet, check_negation_operator)
 
   EXPECT_EQ(expSet, set1);
 }
+
+TEST(TSet, output)
+{
+    TSet bf(4);
+    bf.InsElem(0);
+    bf.InsElem(3);
+    cout << bf << endl;
+
+}
