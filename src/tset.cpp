@@ -29,6 +29,7 @@ TSet::TSet(const TBitField &bf) : BitField(bf.GetLength())
 TSet::operator TBitField()
 {
     TBitField res(this->MaxPower);
+    res = this->BitField;
     return res;
 }
 
@@ -91,6 +92,7 @@ TSet TSet::operator+(const TSet &s) // объединение
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
     TSet res(this->MaxPower);
+    res.BitField = this->BitField;
     res.InsElem(Elem);
     return res;
 }
@@ -98,6 +100,7 @@ TSet TSet::operator+(const int Elem) // объединение с элемент
 TSet TSet::operator-(const int Elem) // разность с элементом
 {
     TSet res(this->MaxPower);
+    res.BitField = this->BitField;
     res.DelElem(Elem);
     return res;
 }

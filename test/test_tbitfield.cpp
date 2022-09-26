@@ -244,6 +244,17 @@ TEST(TBitField, can_set_and_get_bit) {
         else ASSERT_EQ(0, bf.GetBit(i));
 }
 
+TEST(TBitField, can_inverse) {
+    const int size = 70;
+    TBitField bf(size), bf2(1), res(size);
+    for (int i = 0; i < size; i++)
+        res.SetBit(i);
+
+    bf2 = ~bf;
+
+    EXPECT_EQ(res, bf2);
+}
+
 TEST(TBitField, can_do_OR_correctly) {
     const int size1 = 70, size2 = 35;
     TBitField bf1(size1), bf2(size2), bf3(size1);
